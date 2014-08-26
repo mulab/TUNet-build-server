@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Build Page</title>
+</head>
+<body>
+<input type="submit" value="Build" onclick="build()">
+<div id="message"></div>
+<script>
+  function build() {
+    var $button = document.getElementsByTagName('input')[0]
+    $button.disabled = true
+    var $message = document.getElementById('message')
+    $message.innerText += 'Start building...\n'
+    var host = document.location.host
+    var url = "ws://" + host + "/action"
+    var ws = new WebSocket(url)
+    ws.onclose = function(e) {
+      $message.innerText += "close\n"
+    }
+    ws.onmessage = function(e) {
+      $message.innerText += (e.data + "\n")
+    }
+  }
+  </script>
+</body>
+</html>
