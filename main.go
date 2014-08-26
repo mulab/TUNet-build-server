@@ -30,6 +30,7 @@ type Configuration struct {
 	Ant      string
 	Sdk      string
 	Secret   string
+	Port     string
 }
 
 func main() {
@@ -50,7 +51,7 @@ func main() {
 	http.HandleFunc("/build", BuildHandler)
 	http.Handle("/action", websocket.Handler(ActionHandler))
 	http.HandleFunc("/download/", DownloadHandler)
-	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
+	http.ListenAndServe(config.Port, context.ClearHandler(http.DefaultServeMux))
 }
 
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {

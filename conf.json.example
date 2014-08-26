@@ -4,5 +4,6 @@
 	"property": "../../build.properties",
 	"ant": "/usr/local/bin/ant",
 	"sdk": "/Applications/adt-bundle-mac-x86_64-20140702/sdk",
-	"secret": "1234567890"
+	"secret": "1234567890",
+	"port": ":8080"
 }
