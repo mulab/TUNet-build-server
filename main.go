@@ -55,7 +55,10 @@ func main() {
 }
 
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path[9:])
+	session, _ := store.Get(r, session_name)
+	if session.Values["username"] != __username {
+		http.Redirect(w, r, "/", 302)
+	}
 	http.ServeFile(w, r, "TUNet/aTUNet/target"+r.URL.Path[9:])
 }
 
@@ -122,10 +125,9 @@ func ActionHandler(ws *websocket.Conn) {
 	}
 	go func() {
 		var err error
-		ws.Write([]byte("building...")) //call ant main
-		err = os.Chdir("TUNet")
-		if err != nil {
-			c <- err.Error()
+		_, repo_err := os.Stat("TUNet")
+		if repo_err != nil {
+			c <- repo_err.Error()
 			c <- "Cloning repo"
 			clone := exec.Command("git", "clone", "--depth", "1", "--single-branch", "--branch", "master", "git@github.com:mulab/TUNet.git")
 			clone.Stdout = stdout
@@ -135,12 +137,12 @@ func ActionHandler(ws *websocket.Conn) {
 				end <- err.Error()
 				return
 			}
-			err = os.Chdir("TUNet")
 		}
 		c <- "Running git pull..."
 		reset := exec.Command("git", "reset", "HEAD", "--hard")
 		reset.Stdout = stdout
 		reset.Stderr = stderr
+		reset.Dir = "TUNet"
 		err = reset.Run()
 		if err != nil {
 			end <- err.Error()
@@ -149,17 +151,13 @@ func ActionHandler(ws *websocket.Conn) {
 		cmd := exec.Command("git", "pull", "-f", "--no-tags")
 		cmd.Stdout = stdout
 		cmd.Stderr = stderr
+		cmd.Dir = "TUNet"
 		err = cmd.Run()
 		if err != nil {
 			c <- err.Error()
 		}
 		c <- "Building..."
-		err = os.Chdir("aTUNet")
-		if err != nil {
-			end <- err.Error()
-			return
-		}
-		cp := exec.Command("cp", "-f", __property, "./")
+		cp := exec.Command("cp", "-f", __property, "TUNet/aTUNet")
 		cp.Stdout = stdout
 		cp.Stderr = stderr
 		err = cp.Run()
@@ -167,7 +165,7 @@ func ActionHandler(ws *websocket.Conn) {
 			end <- err.Error()
 			return
 		}
-		ant := exec.Command(__antpath, "main", "-q", "-DAsIs=true", "-Dsdk.dir="+__sdkdir)
+		ant := exec.Command(__antpath, "-f", "TUNet/aTUNet/build.xml", "main", "-q", "-DAsIs=true", "-Dsdk.dir="+__sdkdir)
 		ant.Stdout = stdout
 		ant.Stderr = stderr
 		err = ant.Run()
