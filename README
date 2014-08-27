@@ -2,7 +2,7 @@
 
 ## 准备工作
 
-0. 根据config.json.example设置config.json, 需要注意其中property路径是相对`${PROJECT_ROOT}/TUNet/aTUNet`, 建议使用绝对路径
+0. 根据config.json.example设置config.json,相对项目根目录 建议使用绝对路径
 0. 按照TUNet自动化发布流程的说明设定build.properties并准备release.keystore
 
 ## 使用说明
