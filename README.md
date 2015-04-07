@@ -1,3 +1,5 @@
+# Deprecated!
+
 # TUNet Build Server
 
 ## 准备工作
