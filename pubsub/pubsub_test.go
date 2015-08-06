@@ -11,7 +11,7 @@ func TestPubsub(t *testing.T) {
 	//	var _ pubsub.Publisher = (*pubsub.Pubsub)(nil)
 	//	run time check, both is ok
 	var p interface{} = &pubsub.Pubsub{}
-	if _, ok := p.(pubsub.Publisher); !ok {
-		t.Fatal("Pubsub does not implement Publisher")
+	if _, ok := p.(pubsub.MessageQueue); !ok {
+		t.Fatal("Pubsub does not implement MessageQueue")
 	}
 }
