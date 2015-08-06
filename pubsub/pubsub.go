@@ -7,7 +7,7 @@ type Event interface{}
 
 type Publisher interface {
 	Publish(eventType string, event Event) error
-	Register(eventType string, subscriber Subscriber) error
+	Subscribe(eventType string, subscriber Subscriber) error
 }
 
 type Subscriber interface {
